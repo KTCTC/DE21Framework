@@ -10,8 +10,7 @@ import com.uiFramework.KTCTC.testbase.TestBase;
 
 public class WebTablesTest extends TestBase{
 
-	
-	WebTablesPage webTablesPage = new WebTablesPage();
+	WebTablesPage webTablesPage;
 	
 	String fname = cmObj.getcharacterString(5);
 	String lname = cmObj.getcharacterString(5);
@@ -30,9 +29,11 @@ public class WebTablesTest extends TestBase{
 	@Test (priority = 1)
 	public void verifyUserNavigatesToWebTablePage()
 	{
+		
+		 webTablesPage = new WebTablesPage(driver);
 		SoftAssert sAssert = new SoftAssert();
-		cmObj.navigateToReQuiredPage(driver, "Elements");
-		webTablesPage.navigateToWebTablesPage(driver);
+		cmObj.navigateToReQuiredPage(driver,"Elements");
+		webTablesPage.navigateToWebTablesPage();
 		String cnt = driver.getCurrentUrl();
 		sAssert.assertTrue(cnt.contains("webtables"));
 		sAssert.assertAll();
@@ -43,8 +44,8 @@ public class WebTablesTest extends TestBase{
 	public void verifyNewUserCanBeAddedonWebTablesPage()
 	{		
 		SoftAssert sAssert = new SoftAssert();
-		webTablesPage.addNewUserWithProvidedDetails(driver, fname, lname, email, age, salary, dept);
-		boolean flag = webTablesPage.isProvidedUserWithEmailDisplayed(driver, email);
+		webTablesPage.addNewUserWithProvidedDetails(fname, lname, email, age, salary, dept);
+		boolean flag = webTablesPage.isProvidedUserWithEmailDisplayed(email);
 		sAssert.assertTrue(flag, "Newly added user is not displayed on UI");
 		sAssert.assertAll();
 	}
@@ -52,7 +53,7 @@ public class WebTablesTest extends TestBase{
 	@Test (priority = 3)
 	public void verifyAllDetailsOfNewlyAddedUser()
 	{
-		HashMap<String, String> data = webTablesPage.getAllDetailsOfProvidedUser(driver, email);
+		HashMap<String, String> data = webTablesPage.getAllDetailsOfProvidedUser(email);
 		SoftAssert sAssert = new SoftAssert();
 		sAssert.assertEquals(data.get("FirstName"), fname, "First name of newly added user is not matched");
 		sAssert.assertEquals(data.get("LastName"), lname, "Last name of newly added user is not matched");
@@ -67,8 +68,8 @@ public class WebTablesTest extends TestBase{
 	public void verifyExistingUserCanBeEdited()
 	{
 		SoftAssert sAssert = new SoftAssert();
-		webTablesPage.editExistingUserWithProvidedDetails(driver, email, newfname, newlname, newemail, newage, newsalary, newdept);
-		boolean flag = webTablesPage.isProvidedUserWithEmailDisplayed(driver, newemail);
+		webTablesPage.editExistingUserWithProvidedDetails( email, newfname, newlname, newemail, newage, newsalary, newdept);
+		boolean flag = webTablesPage.isProvidedUserWithEmailDisplayed(newemail);
 		sAssert.assertTrue(flag, "Edited user is not displayed on UI");
 		sAssert.assertAll();		
 		
@@ -77,7 +78,7 @@ public class WebTablesTest extends TestBase{
 	@Test (priority = 5)
 	public void verifyAllDetailsOfEditedUser()
 	{
-		HashMap<String, String> data = webTablesPage.getAllDetailsOfProvidedUser(driver, newemail);
+		HashMap<String, String> data = webTablesPage.getAllDetailsOfProvidedUser(newemail);
 		SoftAssert sAssert = new SoftAssert();
 		sAssert.assertEquals(data.get("FirstName"), newfname, "First name of edited user is not matched");
 		sAssert.assertEquals(data.get("LastName"), newlname, "Last name of edited user is not matched");
@@ -91,8 +92,8 @@ public class WebTablesTest extends TestBase{
 	public void verifyExistingUserCanBeDeleted()
 	{
 		SoftAssert sAssert = new SoftAssert();
-		webTablesPage.deleteUserWithProvidedEmailId(driver, newemail);
-		boolean flag = webTablesPage.isProvidedUserWithEmailDisplayed(driver, newemail);		
+		webTablesPage.deleteUserWithProvidedEmailId(newemail);
+		boolean flag = webTablesPage.isProvidedUserWithEmailDisplayed(newemail);		
 		sAssert.assertFalse(flag, "Deleted user is still displayed on UI");
 		sAssert.assertAll();
 		

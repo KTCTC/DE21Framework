@@ -2,12 +2,17 @@ package com.uiFramework.KTCTC.Pages;
 
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+import com.uiFramework.KTCTC.helper.logger.LoggerHelper;
 import com.uiFramework.KTCTC.helper.wait.WaitHelper;
+import com.uiFramwork.KTCTC.ObjectPages.WebTablesObjectPage;
 
-public class WebTablesPage {
+public class WebTablesPage2 {
+	private Logger log = LoggerHelper.getLogger(WebTablesPage2.class);
+	
 	private WebDriver driver;
 	// use alt+ shift+j
 	// Web tables page locators
@@ -27,14 +32,20 @@ public class WebTablesPage {
 	By webTableLinkOnElements = By.xpath("//*[contains(text(),'Web Tables')]");
 	
 	
-	public WebTablesPage(WebDriver driver)
+	public WebTablesPage2(WebDriver driver)
 	{
 		this.driver = driver;
 	}
 	
+	/**
+	 * Method navigates to Webtable page
+	 * 
+	 */
 	public void navigateToWebTablesPage()
 	{
+		log.info("Navigating to webtable page...");
 		driver.findElement(webTableLinkOnElements).click();
+		log.info("Navigated to webtable page");
 	}
 	
 	/**
@@ -48,8 +59,9 @@ public class WebTablesPage {
 	 * @param salary
 	 * @param dept
 	 */
-	public void addNewUserWithProvidedDetails(String fname, String lname, String email, String age, String salary, String dept)
+	public void addNewUserWithProvidedDetails(WebTablesObjectPage webTablesObjectPage)
 	{
+		log.info("Adding new user on webtable page...");
 		driver.findElement(addButtonOnWebTablePage).click();	
 		
 		/*
@@ -58,67 +70,100 @@ public class WebTablesPage {
 		 * firstNameonRegistrationForm), 5, 200);
 		 */
 		
-		driver.findElement(firstNameonRegistrationForm).sendKeys(fname);
-		driver.findElement(lastNameonRegistrationForm).sendKeys(lname);
-		driver.findElement(emailonRegistrationForm).sendKeys(email);
-		driver.findElement(ageonRegistrationForm).sendKeys(age);
-		driver.findElement(salaryonRegistrationForm).sendKeys(salary);
-		driver.findElement(departmentonRegistrationForm).sendKeys(dept);		
+		driver.findElement(firstNameonRegistrationForm).sendKeys(webTablesObjectPage.getfName());
+		driver.findElement(lastNameonRegistrationForm).sendKeys(webTablesObjectPage.getlName());
+		driver.findElement(emailonRegistrationForm).sendKeys(webTablesObjectPage.getEmail());
+		driver.findElement(ageonRegistrationForm).sendKeys(webTablesObjectPage.getAge());
+		driver.findElement(salaryonRegistrationForm).sendKeys(webTablesObjectPage.getSalary());
+		driver.findElement(departmentonRegistrationForm).sendKeys(webTablesObjectPage.getDepartment());		
 		driver.findElement(submitbuttononRegistrationForm).click();		
+		log.info("New user added successfuly");
 		
 	}
 	
+	/**
+	 * Method searchs provided string in search box
+	 * @param email
+	 */
 	public void searchProvidedStringInSearchBox(String email)
 	{
+		log.info("Searching provided email in search box");
 		driver.findElement(searchBoxOnWebTablePage).clear();
 		driver.findElement(searchBoxOnWebTablePage).sendKeys(email);
+		log.info("Searched provided email in search box");
 		
 	}
 	
+	/**
+	 * Methods checks if user is present on webtables page
+	 * @param email
+	 * @return
+	 */
 	public boolean isProvidedUserWithEmailDisplayed(String email)
 	{
+		log.info("chking if user is displayed on webtable page...");
 		boolean flag = false;
 		searchProvidedStringInSearchBox(email);
 		try {
 			flag = driver.findElement(By.xpath("//*[contains(text(),'"+email+"')]")).isDisplayed();
+			log.info("Provided user is displayed on webtable page");
 		} catch (Exception e) {
-			
+			log.info("Provided user is not displayed on webtable page");
 		}
 		
 		return flag;		
 	}
 	
-	public void editExistingUserWithProvidedDetails(String existingEmail, String fname, String lname, String email, String age, String salary, String dept)
+	/**
+	 * Method eidts existing user details 
+	 * 
+	 * @param webTablesObjectPageEdit
+	 */
+	public void editExistingUserWithProvidedDetails(WebTablesObjectPage webTablesObjectPageEdit)
 	{
-		searchProvidedStringInSearchBox(existingEmail);
+		log.info("Editing existing user on webtable page...");
+		searchProvidedStringInSearchBox(webTablesObjectPageEdit.getEmail());
 		
 		driver.findElement(editButtonOnWebTablePage).click();
 		
 		driver.findElement(firstNameonRegistrationForm).clear();
-		driver.findElement(firstNameonRegistrationForm).sendKeys(fname);
+		driver.findElement(firstNameonRegistrationForm).sendKeys(webTablesObjectPageEdit.getfName());
 		driver.findElement(lastNameonRegistrationForm).clear();
-		driver.findElement(lastNameonRegistrationForm).sendKeys(lname);
+		driver.findElement(lastNameonRegistrationForm).sendKeys(webTablesObjectPageEdit.getlName());
 		driver.findElement(emailonRegistrationForm).clear();
-		driver.findElement(emailonRegistrationForm).sendKeys(email);
+		driver.findElement(emailonRegistrationForm).sendKeys(webTablesObjectPageEdit.getEmail());
 		driver.findElement(ageonRegistrationForm).clear();
-		driver.findElement(ageonRegistrationForm).sendKeys(age);
+		driver.findElement(ageonRegistrationForm).sendKeys(webTablesObjectPageEdit.getAge());
 		driver.findElement(salaryonRegistrationForm).clear();
-		driver.findElement(salaryonRegistrationForm).sendKeys(salary);
+		driver.findElement(salaryonRegistrationForm).sendKeys(webTablesObjectPageEdit.getSalary());
 		driver.findElement(departmentonRegistrationForm).clear();
-		driver.findElement(departmentonRegistrationForm).sendKeys(dept);		
-		driver.findElement(submitbuttononRegistrationForm).click();			
+		driver.findElement(departmentonRegistrationForm).sendKeys(webTablesObjectPageEdit.getDepartment());		
+		driver.findElement(submitbuttononRegistrationForm).click();	
+		log.info("Edited existing user on webtable page");
 		
 	}
 	
+	/**
+	 * Method deletes existing user from webtable page
+	 * @param email
+	 */
 	public void deleteUserWithProvidedEmailId(String email)
 	{
+		log.info("Deleting user with provided email id...");
 		searchProvidedStringInSearchBox(email);
 		
 		driver.findElement(deleteButtonOnWebTablePage).click();
+		log.info("User deleted successfuly");
 	}
 	
+	/**
+	 * Method returns back all details of specified user
+	 * @param email
+	 * @return
+	 */
 	public HashMap<String,String> getAllDetailsOfProvidedUser(String email)
 	{
+		log.info("Getting all details of provided user...");
 		searchProvidedStringInSearchBox(email);
 		
 		HashMap<String, String> data = new HashMap<>();
@@ -130,6 +175,7 @@ public class WebTablesPage {
 		data.put("Salary", driver.findElement(By.xpath("//*[contains(text(),'"+email+"')]/following-sibling::div[1]")).getText());
 		data.put("Department", driver.findElement(By.xpath("//*[contains(text(),'"+email+"')]/following-sibling::div[2]")).getText());
 		
+		log.info("All details of user returned successfuly");
 		return data;
 	}
 	
